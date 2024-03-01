@@ -1,26 +1,26 @@
 import express from "express"
 import dotenv from "dotenv"
-import articleRoutes from "./routes/articles"
 import mongoose from "mongoose"
+import userRoutes from "./routes/userRoutes"
 
 dotenv.config()
 const app = express()
+
+app.use(express.json())
 
 const uri = process.env.DATABASE_URL as string
 
 mongoose
   .connect(uri)
   .then(() => console.log("Connected to MongoDB"))
-  .catch(console.error)
+  .catch(e => console.error(e.message))
 
-app.use("/article", articleRoutes)
+app.use("/api/auth", userRoutes)
 
-app.use(express.json())
-
-app.get("/", (req, res) => {
-  res.status(200).json({ msg: "Hello world" })
+app.get("*", (req, res) => {
+  res.status(400).send("Error 404 page not found")
 })
 
 const PORT = process.env.PORT
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+app.listen(PORT, () => console.log(`Listening on port: ${PORT}`))
