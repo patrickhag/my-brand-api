@@ -15,7 +15,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch(e => console.error(e.message))
 
-app.use("/api/auth", userRoutes)
+app.use("/api", userRoutes)
 
 app.get("*", (req, res) => {
   res.status(400).send("Error 404 page not found")
