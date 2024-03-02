@@ -1,9 +1,16 @@
 import { Router } from "express"
-import { loginUser, registerUser } from "../controllers/userController"
+import { UserController } from "../controllers/userController"
+import { AuthMiddleWare } from "../middleware/authMiddleware"
 
 const userRoutes = Router()
 
-userRoutes.post("/register", registerUser)
-userRoutes.post("/login", loginUser)
+userRoutes.post("/register", UserController.registerUser)
+userRoutes.post("/login", UserController.loginUser)
+userRoutes.get(
+  "/users",
+  AuthMiddleWare.isAuthenticated,
+  AuthMiddleWare.checkRole,
+  UserController.getAllUsers
+)
 
 export default userRoutes
