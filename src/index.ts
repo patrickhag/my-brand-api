@@ -1,7 +1,8 @@
 import express from "express"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
-import userRoutes from "./routes/userRoutes"
+import userRoutes from "./routes/user.routes"
+import articleRoutes from "./routes/article.routes"
 
 dotenv.config()
 const app = express()
@@ -16,6 +17,7 @@ mongoose
   .catch(e => console.error(e.message))
 
 app.use("/api", userRoutes)
+app.use("/api/blog", articleRoutes)
 
 app.get("*", (req, res) => {
   res.status(400).send("Error 404 page not found")
