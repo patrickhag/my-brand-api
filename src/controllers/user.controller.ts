@@ -1,4 +1,4 @@
-import { userModel as User } from "../models/userModel"
+import { userModel as User } from "../models/user.model"
 import { Request, Response } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
