@@ -1,5 +1,6 @@
-import { userModel as User } from "../models/user.model"
 import { Request, Response } from "express"
+import { userModel as User } from "../models/user.model"
+import { contactModel as Contact } from "../models/contact.model"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../helper/jwtSecret"
@@ -62,7 +63,8 @@ export class UserController {
           role: userFound.role,
           email: userFound.email,
         },
-        JWT_SECRET
+        JWT_SECRET,
+        { expiresIn: "3d" }
       )
 
       return res.status(200).json({
@@ -83,6 +85,42 @@ export class UserController {
       return res.status(200).json({
         status: "sucess",
         data: allUsers,
+      })
+    } catch (error: unknown) {
+      if (typeof error === "object") {
+        return res.status(500).json({ msg: `${error}` })
+      }
+    }
+  }
+
+  static async contactMe(req: Request, res: Response) {
+    try {
+      const { fullName, phoneNumber, email, message } = req.body
+
+      await Contact.create({
+        fullName,
+        phoneNumber,
+        email,
+        message,
+      })
+
+      return res.status(200).json({
+        status: "success",
+        msg: "Message successfully sent!",
+      })
+    } catch (error: unknown) {
+      if (typeof error === "object") {
+        return res.status(500).json({ msg: `${error}` })
+      }
+    }
+  }
+
+  static async getAllContacts(req: Request, res: Response) {
+    try {
+      const allContacts = await Contact.find()
+      return res.status(200).json({
+        status: "sucess",
+        data: allContacts,
       })
     } catch (error: unknown) {
       if (typeof error === "object") {

@@ -1,19 +1,19 @@
 import { Schema, model } from "mongoose"
 
-const ArticleSchema = new Schema({
-  title: {
+const ContactSchema = new Schema({
+  fullName: {
     type: String,
     required: true,
   },
-  summary: {
+  phoneNumber: {
     type: String,
     required: true,
   },
-  body: {
+  email: {
     type: String,
     required: true,
   },
-  cover: {
+  message: {
     type: String,
     required: true,
   },
@@ -21,13 +21,6 @@ const ArticleSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  likes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "users",
-      phrase: String,
-    },
-  ],
 })
 
-export const articleModel = model("Articles", ArticleSchema)
+export const contactModel = model("contact-me", ContactSchema)

@@ -1,9 +1,9 @@
-import jwt, { JwtPayload } from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../helper/jwtSecret"
 import { NextFunction, Request, Response } from "express"
 
 type User = {
-  userId: number
+  userId: string
   role: string
   email: string
 }
