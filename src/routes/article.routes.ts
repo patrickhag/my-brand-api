@@ -1,43 +1,51 @@
 import { Router } from "express"
-import { CrudController } from "../controllers/article.controller"
-import { AuthMiddleWare } from "../middleware/authMiddleware"
-import multer from "multer"
+import { ArticleController } from "../controllers/article.controller"
+import { CommentController } from "../controllers/article.controller"
+import { AuthMiddleWare } from "../middleware/auth.middleware"
 
 const router = Router()
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "/uploads")
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  },
-})
-
-const upload = multer({ storage: storage })
 
 router.post(
   "/create-blog",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
-  upload.single("file"),
-  CrudController.createArticle
+  ArticleController.createArticle
 )
+
 router.patch(
   "/update-blog/:id",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
-  CrudController.updateArticle
+  ArticleController.updateArticle
 )
 
 router.delete(
   "/delete-blog/:id",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
-  CrudController.deleteArticle
+  ArticleController.deleteArticle
 )
 
-router.get("/all-articles", CrudController.getArticles)
-router.get("/article/:id", CrudController.getArticle)
+router.get("/", AuthMiddleWare.isAuthenticated, ArticleController.getArticles)
+
+router.get("/:id", AuthMiddleWare.isAuthenticated, ArticleController.getArticle)
+
+router.post(
+  "/:articleId/like",
+  AuthMiddleWare.isAuthenticated,
+  ArticleController.likeArticle
+)
+
+router.patch(
+  "/comments/:commentId/update-comment",
+  AuthMiddleWare.isAuthenticated,
+  CommentController.updateComment
+)
+
+router.delete(
+  "/comments/:commentId/delete-comment",
+  AuthMiddleWare.isAuthenticated,
+  CommentController.deleteComment
+)
 
 export default router
