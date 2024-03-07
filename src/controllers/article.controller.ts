@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../helper/jwtSecret"
 import { Types } from "mongoose"
 import { commentModel as Comment } from "../models/comment.model"
+import fs from "fs"
 
 type User = {
   userId: string
@@ -14,13 +15,14 @@ type User = {
 export class ArticleController {
   static async createArticle(req: Request, res: Response) {
     try {
-      const { title, summary, body, file } = req.body
+      const { title, summary, body } = req.body
+      const image = req.file ? req.file.path : null
 
       const createdArticle = await Article.create({
         title,
         summary,
         body,
-        cover: file,
+        cover: image,
       })
 
       return res.status(200).json({
@@ -38,7 +40,16 @@ export class ArticleController {
   static async updateArticle(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const { title, summary, body, cover } = req.body
+      const { title, summary, body } = req.body
+      let image = null
+
+      if (req.file) {
+        const oldArticle = await Article.findById(id)
+        if (oldArticle && oldArticle.cover) {
+          fs.unlinkSync(oldArticle.cover)
+        }
+        image = req.file.path
+      }
 
       const updatedArticle = await Article.findByIdAndUpdate(
         id,
@@ -46,7 +57,7 @@ export class ArticleController {
           title,
           summary,
           body,
-          cover,
+          cover: image,
         },
         { new: true }
       )
@@ -70,6 +81,12 @@ export class ArticleController {
   static async deleteArticle(req: Request, res: Response) {
     try {
       const { id } = req.params
+
+      const foundArticle = await Article.findById(id)
+
+      if (foundArticle && foundArticle.cover) {
+        fs.unlinkSync(foundArticle.cover)
+      }
 
       const deletedArticle = await Article.findByIdAndDelete(id)
 

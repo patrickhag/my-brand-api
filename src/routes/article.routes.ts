@@ -2,50 +2,61 @@ import { Router } from "express"
 import { ArticleController } from "../controllers/article.controller"
 import { CommentController } from "../controllers/article.controller"
 import { AuthMiddleWare } from "../middleware/auth.middleware"
+import upload from "../helper/multer"
 
-const router = Router()
+const articleRouter = Router()
 
-router.post(
+articleRouter.post(
   "/create-blog",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
+  upload.single("image"),
   ArticleController.createArticle
 )
 
-router.patch(
+articleRouter.patch(
   "/update-blog/:id",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
+  upload.single("image"),
   ArticleController.updateArticle
 )
 
-router.delete(
+articleRouter.delete(
   "/delete-blog/:id",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
   ArticleController.deleteArticle
 )
 
-router.get("/", AuthMiddleWare.isAuthenticated, ArticleController.getArticles)
+articleRouter.get(
+  "/",
+  AuthMiddleWare.isAuthenticated,
+  ArticleController.getArticles
+)
 
-router.get("/:id", AuthMiddleWare.isAuthenticated, ArticleController.getArticle)
+articleRouter.get(
+  "/:id",
+  AuthMiddleWare.isAuthenticated,
+  ArticleController.getArticle
+)
 
-router.post(
+articleRouter.post(
   "/:articleId/like",
   AuthMiddleWare.isAuthenticated,
   ArticleController.likeArticle
 )
 
-router.patch(
+articleRouter.patch(
   "/comments/:commentId/update-comment",
   AuthMiddleWare.isAuthenticated,
   CommentController.updateComment
 )
 
-router.delete(
+articleRouter.delete(
   "/comments/:commentId/delete-comment",
   AuthMiddleWare.isAuthenticated,
   CommentController.deleteComment
 )
 
-export default router
+export default articleRouter
