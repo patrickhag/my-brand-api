@@ -2,7 +2,7 @@ import { Router } from "express"
 import { SkillsController } from "../controllers/skills.controller"
 import { AuthMiddleWare } from "../middleware/auth.middleware"
 
-export const skillRoutes = Router()
+const skillRoutes = Router()
 
 skillRoutes.post(
   "/create-skill",
@@ -17,3 +17,5 @@ skillRoutes.put(
   AuthMiddleWare.checkRole,
   SkillsController.updateSkill
 )
+
+export default skillRoutes
