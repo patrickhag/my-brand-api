@@ -5,7 +5,7 @@ import { JWT_SECRET } from "../helper/jwtSecret"
 import { Types } from "mongoose"
 import { commentModel as Comment } from "../models/comment.model"
 import fs from "fs"
-import blogSchema from "../../validations/article.validation"
+import blogSchema from "../validations/article.validation"
 
 type User = {
   userId: string

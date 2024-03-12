@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { projectModel as Project } from "../models/project.model"
 import fs from "fs"
-import projectSchema from "../../validations/project.validation"
+import projectSchema from "../validations/project.validation"
 
 export class ProjectController {
   static async createProject(req: Request, res: Response) {

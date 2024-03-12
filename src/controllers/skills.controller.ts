@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import skillSchema from "../../validations/skills.validation"
+import skillSchema from "../validations/skills.validation"
 import { skillModel as Skill } from "../models/skills.model"
 
 export class SkillsController {

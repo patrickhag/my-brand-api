@@ -4,8 +4,8 @@ import { contactModel as Contact } from "../models/contact.model"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../helper/jwtSecret"
-import userSchema from "../../validations/user.validation"
-import messageSchema from "../../validations/contact.validation"
+import userSchema from "../validations/user.validation"
+import messageSchema from "../validations/contact.validation"
 
 export class UserController {
   static async registerUser(req: Request, res: Response) {
