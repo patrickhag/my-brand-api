@@ -4,6 +4,8 @@ import { contactModel as Contact } from "../models/contact.model"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../helper/jwtSecret"
+import userSchema from "../validations/user.validation"
+import messageSchema from "../validations/contact.validation"
 
 export class UserController {
   static async registerUser(req: Request, res: Response) {
@@ -14,6 +16,14 @@ export class UserController {
         return res.status(400).json({
           status: "fail",
           msg: "Email is already taken",
+        })
+      }
+
+      const { error } = userSchema.validate(req.body)
+      if (error) {
+        return res.status(400).json({
+          status: "Bad request",
+          Message: "Missing Field(s)",
         })
       }
 
@@ -96,6 +106,15 @@ export class UserController {
   static async contactMe(req: Request, res: Response) {
     try {
       const { fullName, phoneNumber, email, message } = req.body
+
+      const { error } = messageSchema.validate(req.body)
+
+      if (error) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: error.details[0].message,
+        })
+      }
 
       await Contact.create({
         fullName,

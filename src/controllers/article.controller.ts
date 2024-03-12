@@ -5,6 +5,7 @@ import { JWT_SECRET } from "../helper/jwtSecret"
 import { Types } from "mongoose"
 import { commentModel as Comment } from "../models/comment.model"
 import fs from "fs"
+import blogSchema from "../validations/article.validation"
 
 type User = {
   userId: string
@@ -17,6 +18,15 @@ export class ArticleController {
     try {
       const { title, summary, body } = req.body
       const image = req.file ? req.file.path : null
+
+      const { error } = blogSchema.validate(req.body)
+
+      if (error) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: error.details[0].message,
+        })
+      }
 
       const createdArticle = await Article.create({
         title,

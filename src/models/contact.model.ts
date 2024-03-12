@@ -20,7 +20,7 @@ const ContactSchema = new Schema({
   date: {
     type: Date,
     default: Date.now(),
-  },
+  }
 })
 
-export const contactModel = model("contact-me", ContactSchema)
+export const contactModel = model("contact-me", ContactSchema);
