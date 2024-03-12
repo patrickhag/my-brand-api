@@ -27,6 +27,8 @@ app.get("*", (req, res) => {
   res.status(400).send("Error 404 page not found")
 })
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT as string
 
-app.listen(PORT, () => console.log(`Listening on port: ${PORT}`))
+const server = app.listen(PORT, () => console.log(`Listening on port: ${PORT}`))
+
+module.exports = server
