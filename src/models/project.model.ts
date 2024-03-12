@@ -18,7 +18,7 @@ const ProjectSchema = new Schema({
     required: true,
   },
   tools: {
-    type: [String],
+    type: String,
     required: true,
   },
 })

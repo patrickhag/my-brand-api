@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import skillSchema from "../../validations/skills.validation"
 import { skillModel as Skill } from "../models/skills.model"
 
 export class SkillsController {
@@ -9,6 +10,15 @@ export class SkillsController {
 
       if (oldSkill.length > 0) {
         return res.status(409).json({ msg: "Skill already registered" })
+      }
+
+      const { error } = skillSchema.validate(req.body)
+
+      if (error) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: error.details[0].message,
+        })
       }
 
       await Skill.create({

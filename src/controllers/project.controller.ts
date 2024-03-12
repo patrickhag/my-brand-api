@@ -1,12 +1,22 @@
 import { Request, Response } from "express"
 import { projectModel as Project } from "../models/project.model"
 import fs from "fs"
+import projectSchema from "../../validations/project.validation"
 
 export class ProjectController {
   static async createProject(req: Request, res: Response) {
     try {
       const { title, summary, body, tools } = req.body
       const image = req.file ? req.file.path : null
+
+      const { error } = projectSchema.validate(req.body)
+
+      if (error) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: error.details[0].message,
+        })
+      }
 
       const createdArticle = await Project.create({
         title,
