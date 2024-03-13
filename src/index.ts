@@ -14,10 +14,10 @@ app.use(express.json())
 
 const uri = process.env.DATABASE_URL as string
 
-// mongoose
-//   .connect(uri)
-//   .then(() => console.log("Connected to MongoDB"))
-//   .catch((e) => console.error(e.message))
+ mongoose
+  .connect(uri)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((e) => console.error(e.message))
 
 app.use("/api", userRoutes)
 app.use("/api/blog", articleRoutes)
