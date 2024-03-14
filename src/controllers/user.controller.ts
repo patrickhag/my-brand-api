@@ -60,6 +60,7 @@ export class UserController {
       }
 
       const isPasswordValid = await bcrypt.compare(password, userFound.password)
+
       if (!isPasswordValid) {
         return res.status(400).json({
           status: "fail",
@@ -77,10 +78,9 @@ export class UserController {
         { expiresIn: "3d" }
       )
 
-      return res.status(200).json({
-        status: "success",
+      return res.status(200).cookie("token", token).json({
         message: "Logged in successfully",
-        token,
+        userFound,
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
@@ -93,7 +93,7 @@ export class UserController {
     try {
       const allUsers = await User.find().select("-password")
       return res.status(200).json({
-        status: "sucess",
+        status: "success",
         data: allUsers,
       })
     } catch (error: unknown) {
@@ -138,7 +138,7 @@ export class UserController {
     try {
       const allContacts = await Contact.find()
       return res.status(200).json({
-        status: "sucess",
+        status: "success",
         data: allContacts,
       })
     } catch (error: unknown) {
