@@ -18,7 +18,7 @@ app.use("/public/uploads/", express.static("public/uploads"))
 const uri = process.env.DATABASE_URL as string
 
 mongoose
-  .connect(uri, { connectTimeoutMS: 60000 })
+  .connect(uri)
   .then(() => console.log("Connected to MongoDB"))
   .catch((e) => console.error(e.message))
 
