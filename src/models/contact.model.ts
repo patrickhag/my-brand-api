@@ -7,7 +7,6 @@ const ContactSchema = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
@@ -20,7 +19,7 @@ const ContactSchema = new Schema({
   date: {
     type: Date,
     default: Date.now(),
-  }
+  },
 })
 
-export const contactModel = model("contact-me", ContactSchema);
+export const contactModel = model("contact-me", ContactSchema)

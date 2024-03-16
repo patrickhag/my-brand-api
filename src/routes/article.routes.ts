@@ -2,7 +2,7 @@ import { Router } from "express"
 import { ArticleController } from "../controllers/article.controller"
 import { CommentController } from "../controllers/article.controller"
 import { AuthMiddleWare } from "../middleware/auth.middleware"
-import upload from "../helper/multer"
+import upload from "../middleware/multer.middleware"
 
 const articleRouter = Router()
 
@@ -14,7 +14,7 @@ articleRouter.post(
   ArticleController.createArticle
 )
 
-articleRouter.patch(
+articleRouter.put(
   "/update-blog/:id",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
@@ -29,17 +29,9 @@ articleRouter.delete(
   ArticleController.deleteArticle
 )
 
-articleRouter.get(
-  "/",
-  AuthMiddleWare.isAuthenticated,
-  ArticleController.getArticles
-)
+articleRouter.get("/", ArticleController.getArticles)
 
-articleRouter.get(
-  "/:id",
-  AuthMiddleWare.isAuthenticated,
-  ArticleController.getArticle
-)
+articleRouter.get("/:id", ArticleController.getArticle)
 
 articleRouter.post(
   "/:articleId/like",

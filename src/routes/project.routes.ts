@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { ProjectController } from "../controllers/project.controller"
 import { AuthMiddleWare } from "../middleware/auth.middleware"
-import upload from "../helper/multer"
+import upload from "../middleware/multer.middleware"
 
 const projectRoutes = Router()
 

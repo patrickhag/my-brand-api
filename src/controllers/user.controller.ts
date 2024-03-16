@@ -15,7 +15,7 @@ export class UserController {
       if (userExist) {
         return res.status(400).json({
           status: "fail",
-          msg: "Email is already taken",
+          message: "Email is already taken",
         })
       }
 
@@ -23,7 +23,7 @@ export class UserController {
       if (error) {
         return res.status(400).json({
           status: "Bad request",
-          Message: "Missing Field(s)",
+          message: "Missing Field(s)",
         })
       }
 
@@ -38,11 +38,11 @@ export class UserController {
 
       return res.status(200).json({
         status: "success",
-        msg: "User successfully created!",
+        message: "User successfully created!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -72,19 +72,19 @@ export class UserController {
         {
           userId: userFound._id,
           role: userFound.role,
-          email: userFound.email,
         },
         JWT_SECRET,
         { expiresIn: "3d" }
       )
 
-      return res.status(200).cookie("token", token).json({
+      return res.status(200).json({
         message: "Logged in successfully",
+        token,
         userFound,
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -98,7 +98,7 @@ export class UserController {
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -106,7 +106,7 @@ export class UserController {
   static async contactMe(req: Request, res: Response) {
     try {
       const { fullName, phoneNumber, email, message } = req.body
-
+      console.log(req.body)
       const { error } = messageSchema.validate(req.body)
 
       if (error) {
@@ -125,11 +125,11 @@ export class UserController {
 
       return res.status(200).json({
         status: "success",
-        msg: "Message successfully sent!",
+        message: "Thank you sending message 😊",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -143,7 +143,28 @@ export class UserController {
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
+      }
+    }
+  }
+
+  static async deleteContact(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+
+      const deletedContact = await Contact.findByIdAndDelete(id)
+
+      if (!deletedContact) {
+        return res.status(404).json({ message: "Contact not found" })
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: "Contact successfully deleted!",
+      })
+    } catch (error: unknown) {
+      if (typeof error === "object") {
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }

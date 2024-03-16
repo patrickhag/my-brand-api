@@ -4,7 +4,6 @@ interface IBlog {
   title: String
   summary: String
   body: String
-  tag: String
 }
 
 const blogSchema = joi.object<IBlog>({

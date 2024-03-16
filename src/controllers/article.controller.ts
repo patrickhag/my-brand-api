@@ -38,11 +38,11 @@ export class ArticleController {
       return res.status(200).json({
         status: "success",
         data: createdArticle,
-        msg: "Article successfully created!",
+        message: "Article successfully created!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -51,7 +51,7 @@ export class ArticleController {
     try {
       const { id } = req.params
       const { title, summary, body } = req.body
-      let image = null
+      let image
 
       if (req.file) {
         const oldArticle = await Article.findById(id)
@@ -73,17 +73,17 @@ export class ArticleController {
       )
 
       if (!updatedArticle) {
-        return res.status(404).json({ msg: "Article not found" })
+        return res.status(404).json({ message: "Article not found" })
       }
 
       return res.status(200).json({
         status: "success",
         data: updatedArticle,
-        msg: "Article successfully updated!",
+        message: "Article successfully updated!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -101,16 +101,16 @@ export class ArticleController {
       const deletedArticle = await Article.findByIdAndDelete(id)
 
       if (!deletedArticle) {
-        return res.status(404).json({ msg: "Article not found" })
+        return res.status(404).json({ message: "Article not found" })
       }
 
       return res.status(200).json({
         status: "success",
-        msg: "Article successfully deleted!",
+        message: "Article successfully deleted!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -122,11 +122,11 @@ export class ArticleController {
       return res.status(200).json({
         status: "success",
         data: articles,
-        msg: "Articles retrieved successfully!",
+        message: "Articles retrieved successfully!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -137,17 +137,17 @@ export class ArticleController {
       const article = await Article.findById(id)
 
       if (!article) {
-        return res.status(404).json({ msg: "Article not found" })
+        return res.status(404).json({ message: "Article not found" })
       }
 
       return res.status(200).json({
         status: "success",
         data: article,
-        msg: "Article retrieved successfully!",
+        message: "Article retrieved successfully!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -163,17 +163,19 @@ export class ArticleController {
       const article = await Article.findById(articleId)
 
       if (article?.likes.includes(userId)) {
-        return res.status(400).json({ msg: "You already liked this article." })
+        return res
+          .status(400)
+          .json({ message: "You already liked this article." })
       }
 
       article?.likes.push(userId)
 
       await article?.save()
 
-      return res.status(200).json({ msg: "Article liked successfully." })
+      return res.status(200).json({ message: "Article liked successfully." })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -199,11 +201,11 @@ export class CommentController {
       return res.status(200).json({
         status: "success",
         data: createdComment,
-        msg: "Comment successfully sent!",
+        message: "Comment successfully sent!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -220,17 +222,17 @@ export class CommentController {
       )
 
       if (!updatedComment) {
-        return res.status(404).json({ msg: "Comment not found." })
+        return res.status(404).json({ message: "Comment not found." })
       }
 
       return res.status(200).json({
         status: "success",
         data: updatedComment,
-        msg: "Comment updated successfully.",
+        message: "Comment updated successfully.",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -242,16 +244,16 @@ export class CommentController {
       const deletedComment = await Comment.findByIdAndDelete(commentId)
 
       if (!deletedComment) {
-        return res.status(404).json({ msg: "Comment not found." })
+        return res.status(404).json({ message: "Comment not found." })
       }
 
       return res.status(200).json({
         status: "success",
-        msg: "Comment deleted successfully.",
+        message: "Comment deleted successfully.",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -263,11 +265,11 @@ export class CommentController {
       return res.status(200).json({
         status: "success",
         data: comments,
-        msg: "All comments retrieved successfully.",
+        message: "All comments retrieved successfully.",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -281,11 +283,11 @@ export class CommentController {
       return res.status(200).json({
         status: "success",
         data: userComments,
-        msg: "User comments retrieved successfully.",
+        message: "User comments retrieved successfully.",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }

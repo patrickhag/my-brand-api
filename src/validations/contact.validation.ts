@@ -2,15 +2,15 @@ import joi from "joi"
 
 interface IMessages {
   fullName: String
-  phoneNumber: Number
+  phoneNumber: String
   message: String
   email: String
 }
 
 const messageSchema = joi.object<IMessages>({
   fullName: joi.string().required(),
-  phoneNumber: joi.number().max(13),
-  message: joi.string().required().min(50).max(600),
+  phoneNumber: joi.number().min(5),
+  message: joi.string().required().min(20).max(600),
   email: joi.string().required().email(),
 })
 
