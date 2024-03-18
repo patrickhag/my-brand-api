@@ -15,11 +15,18 @@ userRoutes.get(
 )
 
 userRoutes.post("/contact-me", UserController.contactMe)
-userRoutes.post(
+userRoutes.get(
   "/all-contacts",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
   UserController.getAllContacts
+)
+
+userRoutes.delete(
+  "/delete-contact/:id",
+  AuthMiddleWare.isAuthenticated,
+  AuthMiddleWare.checkRole,
+  UserController.deleteContact
 )
 
 export default userRoutes
