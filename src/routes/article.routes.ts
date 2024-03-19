@@ -39,16 +39,27 @@ articleRouter.post(
   ArticleController.likeArticle
 )
 
+articleRouter.post(
+  "/:articleId/create-comment",
+  CommentController.commentArticle
+)
+
 articleRouter.patch(
-  "/comments/:commentId/update-comment",
+  "/:commentId/update-comment",
   AuthMiddleWare.isAuthenticated,
   CommentController.updateComment
 )
 
 articleRouter.delete(
-  "/comments/:commentId/delete-comment",
+  "/:commentId/delete-comment",
   AuthMiddleWare.isAuthenticated,
   CommentController.deleteComment
+)
+
+articleRouter.get(
+  "/:articleId/all-comments",
+  AuthMiddleWare.isAuthenticated,
+  CommentController.getAllCommentsRelatedToArticle
 )
 
 export default articleRouter

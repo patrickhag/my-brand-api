@@ -13,7 +13,7 @@ projectRoutes.post(
   ProjectController.createProject
 )
 
-projectRoutes.patch(
+projectRoutes.put(
   "/update-project/:id",
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
@@ -26,5 +26,9 @@ projectRoutes.delete(
   AuthMiddleWare.checkRole,
   ProjectController.deleteProject
 )
+
+projectRoutes.get("/", ProjectController.getProjects)
+
+projectRoutes.get("/:id", ProjectController.getProject)
 
 export default projectRoutes

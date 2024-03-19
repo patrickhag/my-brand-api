@@ -72,6 +72,7 @@ export class UserController {
         {
           userId: userFound._id,
           role: userFound.role,
+          names: userFound.fullName,
         },
         JWT_SECRET,
         { expiresIn: "3d" }

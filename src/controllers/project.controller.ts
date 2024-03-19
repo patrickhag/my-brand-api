@@ -18,7 +18,7 @@ export class ProjectController {
         })
       }
 
-      const createdArticle = await Project.create({
+      const createdProject = await Project.create({
         title,
         summary,
         body,
@@ -28,12 +28,12 @@ export class ProjectController {
 
       return res.status(200).json({
         status: "success",
-        data: createdArticle,
-        msg: "Project added successfully!",
+        data: createdProject,
+        message: "Project added successfully!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -41,8 +41,9 @@ export class ProjectController {
   static async updateProject(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const { title, summary, body, tools } = req.body
-      let image = null
+      const { title, summary, tools } = req.body
+
+      let image
 
       if (req.file) {
         const oldProject = await Project.findById(id)
@@ -57,7 +58,6 @@ export class ProjectController {
         {
           title,
           summary,
-          body,
           cover: image,
           tools,
         },
@@ -65,16 +65,16 @@ export class ProjectController {
       )
 
       if (!updatedProject) {
-        return res.status(404).json({ msg: "Project not found" })
+        return res.status(404).json({ message: "Project not found" })
       }
 
       return res.status(200).json({
         status: "success",
-        msg: "Project successfully updated!",
+        message: "Project successfully updated!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }
@@ -88,18 +88,54 @@ export class ProjectController {
       if (foundProject) {
         fs.unlinkSync(foundProject.cover)
       } else {
-        return res.status(404).json({ msg: "Project not found" })
+        return res.status(404).json({ message: "Project not found" })
       }
 
-      const deletedProject = await Project.findByIdAndDelete(id)
+      await Project.findByIdAndDelete(id)
 
       return res.status(200).json({
         status: "success",
-        msg: "Project successfully deleted!",
+        message: "Project successfully deleted!",
       })
     } catch (error: unknown) {
       if (typeof error === "object") {
-        return res.status(500).json({ msg: `${error}` })
+        return res.status(500).json({ message: `${error}` })
+      }
+    }
+  }
+
+  static async getProjects(req: Request, res: Response) {
+    try {
+      const foundProjects = await Project.find()
+
+      return res.status(200).json({
+        status: "success",
+        message: "Project successfully deleted!",
+        data: foundProjects,
+      })
+    } catch (error: unknown) {
+      if (typeof error === "object") {
+        return res.status(500).json({ message: `${error}` })
+      }
+    }
+  }
+  static async getProject(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const project = await Project.findById(id)
+
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" })
+      }
+
+      return res.status(200).json({
+        status: "success",
+        data: project,
+        message: "Project retrieved successfully!",
+      })
+    } catch (error: unknown) {
+      if (typeof error === "object") {
+        return res.status(500).json({ message: `${error}` })
       }
     }
   }

@@ -9,10 +9,6 @@ const ProjectSchema = new Schema({
     type: String,
     required: true,
   },
-  body: {
-    type: String,
-    required: true,
-  },
   cover: {
     type: String,
     required: true,

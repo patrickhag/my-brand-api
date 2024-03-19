@@ -8,9 +8,9 @@ import fs from "fs"
 import blogSchema from "../validations/article.validation"
 
 type User = {
-  userId: string
+  userId?: string
   role: string
-  email: string
+  names: string
 }
 
 export class ArticleController {
@@ -190,10 +190,20 @@ export class CommentController {
       const authorization = req.headers.authorization as string
       const token = authorization.split(" ")[1]
       const user = jwt.verify(token, JWT_SECRET) as User
-      const userId = new Types.ObjectId(user.userId)
+
+      const existingComment = await Comment.findOne({
+        article: articleId,
+        user: user.names,
+      })
+
+      if (existingComment) {
+        return res
+          .status(400)
+          .json({ message: "You have already commented on this article." })
+      }
 
       const createdComment = await Comment.create({
-        user: userId,
+        user: user.names,
         article: articleId,
         phrase,
       })
@@ -258,10 +268,10 @@ export class CommentController {
     }
   }
 
-  static async getAllComments(req: Request, res: Response) {
+  static async getAllCommentsRelatedToArticle(req: Request, res: Response) {
     try {
-      const comments = await Comment.find()
-
+      const { articleId } = req.params
+      const comments = await Comment.find({ article: articleId })
       return res.status(200).json({
         status: "success",
         data: comments,
