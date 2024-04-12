@@ -1,13 +1,14 @@
-import { Request, Response } from "express"
-import { articleModel as Article } from "../models/article.model"
-import jwt from "jsonwebtoken"
-import { JWT_SECRET } from "../helper/jwtSecret"
-import { Types } from "mongoose"
-import { commentModel as Comment } from "../models/comment.model"
-import fs from "fs"
-import blogSchema from "../validations/article.validation"
+import { type Request, type Response } from 'express'
+import { articleModel as Article } from '../models/article.model'
+import jwt from 'jsonwebtoken'
+import { JWT_SECRET } from '../helper/jwt-secret'
+import { Types } from 'mongoose'
+import { commentModel as Comment } from '../models/comment.model'
+import fs from 'fs'
+import blogSchema from '../validations/article.validation'
+import cloudinary from '../helper/cloudinary'
 
-type User = {
+interface User {
   userId?: string
   role: string
   names: string
@@ -17,31 +18,33 @@ export class ArticleController {
   static async createArticle(req: Request, res: Response) {
     try {
       const { title, summary, body } = req.body
-      const image = req.file ? req.file.path : null
+      console.log(req.file!)
+      const image = await cloudinary.uploader.upload(
+        req.file ? req.file.path : ''
+      )
 
       const { error } = blogSchema.validate(req.body)
 
-      if (error) {
+      if (error != null) {
         return res.status(400).json({
-          status: "Bad Request",
+          status: 'Bad Request',
           message: error.details[0].message,
         })
       }
 
-      const createdArticle = await Article.create({
+      await Article.create({
         title,
         summary,
         body,
-        cover: image,
+        cover: image.secure_url,
       })
 
-      return res.status(200).json({
-        status: "success",
-        data: createdArticle,
-        message: "Article successfully created!",
+      return res.status(201).json({
+        status: 'success',
+        message: 'Article successfully created!',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -73,16 +76,16 @@ export class ArticleController {
       )
 
       if (!updatedArticle) {
-        return res.status(404).json({ message: "Article not found" })
+        return res.status(404).json({ message: 'Article not found' })
       }
 
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: updatedArticle,
-        message: "Article successfully updated!",
+        message: 'Article successfully updated!',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -101,15 +104,15 @@ export class ArticleController {
       const deletedArticle = await Article.findByIdAndDelete(id)
 
       if (!deletedArticle) {
-        return res.status(404).json({ message: "Article not found" })
+        return res.status(404).json({ message: 'Article not found' })
       }
 
       return res.status(200).json({
-        status: "success",
-        message: "Article successfully deleted!",
+        status: 'success',
+        message: 'Article successfully deleted!',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -120,12 +123,12 @@ export class ArticleController {
       const articles = await Article.find()
 
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: articles,
-        message: "Articles retrieved successfully!",
+        message: 'Articles retrieved successfully!',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -137,16 +140,16 @@ export class ArticleController {
       const article = await Article.findById(id)
 
       if (!article) {
-        return res.status(404).json({ message: "Article not found" })
+        return res.status(404).json({ message: 'Article not found' })
       }
 
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: article,
-        message: "Article retrieved successfully!",
+        message: 'Article retrieved successfully!',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -155,8 +158,8 @@ export class ArticleController {
   static async likeArticle(req: Request, res: Response) {
     try {
       const { articleId } = req.params
-      const authorization = req.headers.authorization as string
-      const token = authorization.split(" ")[1]
+      const authorization = req.headers.authorization!
+      const token = authorization.split(' ')[1]
       const user = jwt.verify(token, JWT_SECRET) as User
       const userId = new Types.ObjectId(user.userId)
 
@@ -165,16 +168,16 @@ export class ArticleController {
       if (article?.likes.includes(userId)) {
         return res
           .status(400)
-          .json({ message: "You already liked this article." })
+          .json({ message: 'You already liked this article.' })
       }
 
       article?.likes.push(userId)
 
       await article?.save()
 
-      return res.status(200).json({ message: "Article liked successfully." })
+      return res.status(200).json({ message: 'Article liked successfully.' })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -187,8 +190,8 @@ export class CommentController {
       const { articleId } = req.params
       const { phrase } = req.body
 
-      const authorization = req.headers.authorization as string
-      const token = authorization.split(" ")[1]
+      const authorization = req.headers.authorization!
+      const token = authorization.split(' ')[1]
       const user = jwt.verify(token, JWT_SECRET) as User
 
       const existingComment = await Comment.findOne({
@@ -199,7 +202,7 @@ export class CommentController {
       if (existingComment) {
         return res
           .status(400)
-          .json({ message: "You have already commented on this article." })
+          .json({ message: 'You have already commented on this article.' })
       }
 
       const createdComment = await Comment.create({
@@ -209,12 +212,12 @@ export class CommentController {
       })
 
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: createdComment,
-        message: "Comment successfully sent!",
+        message: 'Comment successfully sent!',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -232,16 +235,16 @@ export class CommentController {
       )
 
       if (!updatedComment) {
-        return res.status(404).json({ message: "Comment not found." })
+        return res.status(404).json({ message: 'Comment not found.' })
       }
 
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: updatedComment,
-        message: "Comment updated successfully.",
+        message: 'Comment updated successfully.',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -254,15 +257,15 @@ export class CommentController {
       const deletedComment = await Comment.findByIdAndDelete(commentId)
 
       if (!deletedComment) {
-        return res.status(404).json({ message: "Comment not found." })
+        return res.status(404).json({ message: 'Comment not found.' })
       }
 
       return res.status(200).json({
-        status: "success",
-        message: "Comment deleted successfully.",
+        status: 'success',
+        message: 'Comment deleted successfully.',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -273,12 +276,12 @@ export class CommentController {
       const { articleId } = req.params
       const comments = await Comment.find({ article: articleId })
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: comments,
-        message: "All comments retrieved successfully.",
+        message: 'All comments retrieved successfully.',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }
@@ -291,12 +294,12 @@ export class CommentController {
       const userComments = await Comment.find({ user: userId })
 
       return res.status(200).json({
-        status: "success",
+        status: 'success',
         data: userComments,
-        message: "User comments retrieved successfully.",
+        message: 'User comments retrieved successfully.',
       })
     } catch (error: unknown) {
-      if (typeof error === "object") {
+      if (typeof error === 'object') {
         return res.status(500).json({ message: `${error}` })
       }
     }

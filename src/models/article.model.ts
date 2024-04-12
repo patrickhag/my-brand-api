@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose"
+import { Schema, model } from 'mongoose'
 
 const ArticleSchema = new Schema({
   title: {
@@ -15,7 +15,6 @@ const ArticleSchema = new Schema({
   },
   cover: {
     type: String,
-    required: true,
   },
   date: {
     type: Date,
@@ -24,10 +23,10 @@ const ArticleSchema = new Schema({
   likes: [
     {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: 'users',
       phrase: String,
     },
   ],
 })
 
-export const articleModel = model("Articles", ArticleSchema)
+export const articleModel = model('Articles', ArticleSchema)

@@ -1,29 +1,29 @@
-import { Router } from "express"
-import { UserController } from "../controllers/user.controller"
-import { AuthMiddleWare } from "../middleware/auth.middleware"
+import { Router } from 'express'
+import { UserController } from '../controllers/user.controller'
+import { AuthMiddleWare } from '../middleware/auth.middleware'
 
 const userRoutes = Router()
 
-userRoutes.post("/register", UserController.registerUser)
+userRoutes.post('/register', UserController.registerUser)
 
-userRoutes.post("/login", UserController.loginUser)
+userRoutes.post('/login', UserController.loginUser)
 userRoutes.get(
-  "/users",
+  '/users',
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
   UserController.getAllUsers
 )
 
-userRoutes.post("/contact-me", UserController.contactMe)
+userRoutes.post('/contact-me', UserController.contactMe)
 userRoutes.get(
-  "/all-contacts",
+  '/all-contacts',
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
   UserController.getAllContacts
 )
 
 userRoutes.delete(
-  "/delete-contact/:id",
+  '/delete-contact/:id',
   AuthMiddleWare.isAuthenticated,
   AuthMiddleWare.checkRole,
   UserController.deleteContact
